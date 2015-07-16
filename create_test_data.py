@@ -29,10 +29,17 @@ if __name__=="__main__":
     length_file = len(file_list)
     result_text= []
     for local_file in file_list:
-        data = json.loads(open(local_file, 'r').read())
+        try:
+            data = json.loads(open(local_file, 'r').read())
+        except ValueError:
+            print 'No json object found in: ' + local_file
+            continue
         if 'review' in data:
             review_arr = re.split('\n|\.', data['review'])
             result_text = result_text + review_arr
+    f = open('aggregate.json', 'w')
+    f.write(json.dumps(result_text))
+    f.close()
     output_length = int(sys.argv[2])
     total_length = len(result_text)
     filtered_result = []
